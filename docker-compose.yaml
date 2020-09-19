@@ -9,11 +9,9 @@ services:
       - AWS_DEFAULT_REGION
     volumes:
       - .:/opt/app:rw
-  aws:
-    image: amazon/aws-cli
-    environment:
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - AWS_DEFAULT_REGION
+  hello-world:
+    build: ./applications/hello-world
+    ports:
+      - 80:3000
     volumes:
-      - ./aws:/opt/app/aws:rw
+      - ./applications/hello-world:/opt/app/applications/hello-world:rw
