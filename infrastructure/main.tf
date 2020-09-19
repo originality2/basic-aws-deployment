@@ -1,3 +1,8 @@
-resource "aws_ecr_repository" "my_first_ecr_repo" {
-  name = "my-first-ecr-repo" # Naming my repository
+resource "aws_instance" "basic-app" {
+  ami           = "ami-09ba19d0563c3d553"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "basic-app-instance"
+  }
 }

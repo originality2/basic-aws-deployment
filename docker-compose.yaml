@@ -2,10 +2,18 @@
 version: '3.8'
 services:
   terraform:
-    image: hashicorp/terraform
+    image: hashicorp/terraform:latest
     environment: 
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_DEFAULT_REGION
     volumes:
       - .:/opt/app:rw
+  aws:
+    image: amazon/aws-cli
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION
+    volumes:
+      - ./aws:/opt/app/aws:rw
