@@ -3,10 +3,10 @@ SHELL := /bin/bash -o pipefail
 # .DEFAULT_GOAL := start (TBD) 
 
 # default variables
-KEY_PAIR ?= EntryKey
 APP ?= hello-world
 AWS_ACCOUNT_ID ?= 678727778487
 
+# to mount to TF container
 export AWS_DEFAULT_REGION=ap-southeast-2
 
 TF_INFRA_DIR = /opt/app/infrastructure
