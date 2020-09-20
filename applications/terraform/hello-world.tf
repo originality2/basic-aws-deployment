@@ -1,6 +1,11 @@
+locals {
+  app_name   = "hello-world"
+  cluster_id = "arn:aws:ecs:ap-southeast-2:678727778487:cluster/app-cluster"
+}
+
 resource "aws_ecs_task_definition" "basic_app_task" {
-  family                = "${var.app_name}-task"
-  container_definitions = file("task-definitions/${var.app_name}-service.json")
+  family                = "${local.app_name}-task"
+  container_definitions = file("task-definitions/${local.app_name}-service.json")
   network_mode          = "awsvpc"
 
   requires_compatibilities = ["FARGATE"]
@@ -20,8 +25,8 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
 }
 
 resource "aws_ecs_service" "basic_app_service" {
-  name            = "${var.app_name}-service"                    
-  cluster         = var.cluster_id             
+  name            = "${local.app_name}-service"                    
+  cluster         = local.cluster_id             
   task_definition = aws_ecs_task_definition.basic_app_task.arn
   desired_count   = 1
   launch_type     = "FARGATE"
@@ -38,33 +43,6 @@ resource "aws_ecs_service" "basic_app_service" {
                         aws_default_subnet.default_subnet_c.id]
     assign_public_ip = true   
     security_groups  = [aws_security_group.service_security_group.id]
-  }
-}
-
-resource "aws_alb" "application_load_balancer" {
-  name               = "${var.app_name}-lb"
-  load_balancer_type = "application"
-  subnets = [
-    aws_default_subnet.default_subnet_a.id,
-    aws_default_subnet.default_subnet_b.id,
-    aws_default_subnet.default_subnet_c.id
-  ]
-  security_groups = [aws_security_group.load_balancer_security_group.id]
-}
-
-resource "aws_security_group" "load_balancer_security_group" {
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0 
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
@@ -107,19 +85,4 @@ resource "aws_security_group" "service_security_group" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-resource "aws_default_vpc" "default_vpc" {
-}
-
-resource "aws_default_subnet" "default_subnet_a" {
-  availability_zone = "ap-southeast-2a"
-}
-
-resource "aws_default_subnet" "default_subnet_b" {
-  availability_zone = "ap-southeast-2b"
-}
-
-resource "aws_default_subnet" "default_subnet_c" {
-  availability_zone = "ap-southeast-2c"
 }
