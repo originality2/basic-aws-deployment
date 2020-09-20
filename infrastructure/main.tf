@@ -5,3 +5,7 @@ resource "aws_ecr_repository" "docker-registry" {
     scan_on_push = true
   }
 }
+
+resource "aws_ecs_cluster" "app_cluster" {
+  name = "app-cluster"
+}
