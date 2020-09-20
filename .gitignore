@@ -1,4 +1,5 @@
 applications/hello-world/Gemfile.lock
 applications/hello-world/.sw*
 infrastructure/.terraform
+applications/hello-world/terrraform/.terraform
 aws/.secrets/*
