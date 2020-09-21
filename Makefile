@@ -20,7 +20,11 @@ APP_RUN = docker-compose run -w $(APP_DIR) --service-ports $(APP)
 
 rebuild: clean-slate registry-build docker-push-ecr infra-build
 
+test-deployment:
+	LB=$(aws elbv2 describe-load-balancers --names "application-lb" | jq -r ".LoadBalancers[0].DNSName")
+	curl ${LB}
 
+clean-slate: infra-clean registry-clean docker-clean
 
 # Infrastructure
 registry-plan: _init_registry
@@ -71,13 +75,13 @@ docker-clean:
 	docker-compose down --rmi all
 
 
-
+# DEBUGGING
+# terraform infrastructure shell - intended for debugging
+# refrain from using targeted applies
 shell-terraform:
-	# terraform shell - intended for debugging
 	docker-compose run -w $(TF_INFRA_DIR) --entrypoint sh terraform
 
+# terraform container registry - intended for debugging
+# refrain from using targeted applies
 shell-skeleton-terraform:
-	# terraform shell - intended for debugging
 	docker-compose run -w $(TF_PREREQ_DIR) --entrypoint sh terraform
-
-clean-slate: infra-clean registry-clean docker-clean
