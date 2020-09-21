@@ -21,8 +21,7 @@ APP_RUN = docker-compose run -w $(APP_DIR) --service-ports $(APP)
 rebuild: clean-slate registry-build docker-push-ecr infra-build
 
 test-deployment:
-	LB=$(aws elbv2 describe-load-balancers --names "application-lb" | jq -r ".LoadBalancers[0].DNSName")
-	curl ${LB}
+	curl $$(aws elbv2 describe-load-balancers --names "application-lb" | jq -r ".LoadBalancers[0].DNSName") \
 
 clean-slate: infra-clean registry-clean docker-clean
 
